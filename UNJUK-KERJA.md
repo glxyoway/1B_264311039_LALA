@@ -29,3 +29,51 @@ Kompleksitas Waktu (Time Complexity): Secara teoretis, kompleksitas kueri ini be
 Kompleksitas Ruang (Space Complexity):O(K), di mana K adalah jumlah baris unik mitra yang lolos dari filter dan berhasil dikelompokkan pada tabel hasil sementara (temporary result set).
 
 ---
+
+**2. Penerapan Denormalisasi (Tahap 2): Eksekusi DDL (ALTER TABLE atau CREATE TABLE) untuk menambahkan
+   satu atribut turunan pada tabel master ATAU membuat satu tabel rekapitulasi
+   yang menyimpan hasil dari perhitungan tahap 1.** 
+
+   **[CONTOH ILUSTRASI, uji dulu di versi yang dipakai]:
+   ALTER TABLE pelanggan ADD COLUMN total_belanja DECIMAL(15,2) DEFAULT 0;**
+   
+Jawab:
+
+```sql
+-- 2. A. Menambahkan atribut redundan (turunan) pada tabel master (users)
+ALTER TABLE users 
+ADD COLUMN total_lokasi_terdaftar INT DEFAULT 0;
+
+-- B. Mengisi kolom turunan tersebut dengan data hasil agregasi dari tabel lokasi
+UPDATE users u
+SET total_lokasi_terdaftar = (
+    SELECT COUNT(l.lokasi_id)
+    FROM lokasi l
+    WHERE l.mitra_id = u.user_id
+);
+```
+![hasil-no-2](Asset/modul9-hasilno2.png)
+
+---
+
+**3. Pembuktian (Tahap 3): Tulis query SELECT sederhana untuk memanggil data dari kolom/tabel denormalisasi
+   (Tahap 2) tanpa menggunakan JOIN atau agregasi. Bandingkan dengan query Tahap 1.**
+
+Jawab:
+
+```sql
+-- 3. Query baca yang sangat cepat untuk fitur dasbor tanpa JOIN atau agregasi
+SELECT 
+    user_id AS id_mitra,
+    name AS nama_mitra,
+    total_lokasi_terdaftar
+FROM users
+WHERE role = 'mitra';
+```
+![hasil-no-3](Asset/Modul9-hasilno3.png)
+
+Perbandingan Antara Tahap 1 dan Tahap 3 Dari Sisi Kompleksitas & Performa:
+<br>
+-Tahap 1 (Normalisasi Penuh): Menggunakan JOIN dan fungsi agregasi COUNT(). Proses kerjanya dinamis (on-the-fly), di mana     MySQL harus mencocokkan baris antar tabel secara langsung setiap kali kueri dipanggil. Kompleksitas waktunya tinggi          (O(N×M)), sehingga jika data pada tabel lokasi sudah mencapai ribuan baris, aplikasi akan terasa lambat (slow query) saat    memuat halaman dasbor.
+<br>
+-Tahap 3 (Hasil Denormalisasi): Menggunakan kueri SELECT sederhana dari satu tabel saja tanpa JOIN dan tanpa fungsi           agregasi. Nilai totalnya sudah tersedia secara fisik di dalam kolom total_lokasi_terdaftar. Kompleksitas waktunya menjadi    jauh lebih cepat (O(N)), sangat optimal untuk mendukung performa pemuatan halaman dasbor (dashboard aplikasi). 
