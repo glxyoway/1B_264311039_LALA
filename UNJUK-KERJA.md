@@ -17,4 +17,14 @@ GROUP BY u.user_id, u.name;
 
 ![hasil-no-1](Asset/Modul9-hasilno1.png)
 
+Analisis Kompleksitas Query:
+Kompleksitas Waktu (Time Complexity): Secara teoretis, kompleksitas kueri ini berada pada kisaran O(N×M) atau O(N log⁡ N ) jika dioptimalkan dengan indeks.  
+<br>
+-Mesin database harus melakukan pemindaian atau pencocokan baris (join) antara tabel users (N baris) dan tabel lokasi (M      baris) melalui kolom relasi foreign key (mitra_id).
+<br>
+-Proses filter WHERE u.role = 'mitra' membantu mempersempit baris awal dari tabel users sebelum dicocokkan.
+<br>
+-Fungsi agregasi COUNT() dan pengelompokan GROUP BY memerlukan tahapan tambahan berupa penyortiran atau pengelompokan data akhir berdasarkan ID mitra.  
+<br>
+Kompleksitas Ruang (Space Complexity):O(K), di mana K adalah jumlah baris unik mitra yang lolos dari filter dan berhasil dikelompokkan pada tabel hasil sementara (temporary result set).
 ---
