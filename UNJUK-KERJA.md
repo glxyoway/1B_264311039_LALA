@@ -77,3 +77,10 @@ Perbandingan Antara Tahap 1 dan Tahap 3 Dari Sisi Kompleksitas & Performa:
 -Tahap 1 (Normalisasi Penuh): Menggunakan JOIN dan fungsi agregasi COUNT(). Proses kerjanya dinamis (on-the-fly), di mana     MySQL harus mencocokkan baris antar tabel secara langsung setiap kali kueri dipanggil. Kompleksitas waktunya tinggi          (O(N×M)), sehingga jika data pada tabel lokasi sudah mencapai ribuan baris, aplikasi akan terasa lambat (slow query) saat    memuat halaman dasbor.
 <br>
 -Tahap 3 (Hasil Denormalisasi): Menggunakan kueri SELECT sederhana dari satu tabel saja tanpa JOIN dan tanpa fungsi           agregasi. Nilai totalnya sudah tersedia secara fisik di dalam kolom total_lokasi_terdaftar. Kompleksitas waktunya menjadi    jauh lebih cepat (O(N)), sangat optimal untuk mendukung performa pemuatan halaman dasbor (dashboard aplikasi). 
+
+---
+
+**4. Presentasi Kelompok & Git: Simpan (commit & push) berkas .sql ke Git kelompok. Demonstrasikan perbandingan query JOIN (sebelum) vs query denormalisasi (sesudah) di DBMS Anda kepada dosen pengampu.**
+
+jawab:
+https://github.com/sinaraalnegar/kelompok_7_database.git
